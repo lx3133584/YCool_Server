@@ -4,7 +4,7 @@
 ## 安装
 请先确定安装了 mongoodb。
 ```bash
-git clone https://github.com/dlyt/YCool_Server.git
+git clone https://github.com/lx3133584/novel_Server
 npm install
 ```
 

@@ -6,6 +6,7 @@ import mongoose from 'mongoose'
 import session from 'koa-generic-session'
 import passport from 'koa-passport'
 import mount from 'koa-mount'
+import cors from 'koa-cors'
 import serve from 'koa-static'
 
 import config from '../config'
@@ -24,6 +25,7 @@ app.use(convert(logger()))
 app.use(bodyParser())
 app.use(convert(session()))
 app.use(errorMiddleware())
+app.use(cors({origin: config.origin}))
 
 app.use(convert(mount('/docs', serve(`${process.cwd()}/docs`))))
 

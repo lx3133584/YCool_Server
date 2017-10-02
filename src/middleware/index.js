@@ -4,7 +4,7 @@ export function errorMiddleware () {
       await next()
     } catch (err) {
       ctx.status = err.status || 500
-      ctx.body = err.message
+      ctx.body = {message: err.message, status: err.status || 500}
       ctx.app.emit('error', err, ctx)
     }
   }

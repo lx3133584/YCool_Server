@@ -8,18 +8,6 @@ import app from '../../../bin/server'
 
 const handle = {}
 
-//统计api访问量
-handle.count = async (key) => {
-  try {
-    return true
-    // let num = await Redis.get(key)
-    // let newNum = num === 'NaN' ? 0 : parseInt(num) + 1
-    // await Redis.set(key, newNum)
-  } catch (e) {
-    Handle.sendEmail(e.message)
-  }
-}
-
 handle.success = (data = {}) => {
   return {
     success: true,
@@ -29,7 +17,7 @@ handle.success = (data = {}) => {
 }
 
 //报错时，发送邮件
-handle.sendEmail = (mes) => {
+handle.sendEmail = (msg) => {
 
   const config = wellknown("QQ")
   config.auth = {
@@ -44,7 +32,7 @@ handle.sendEmail = (mes) => {
       to: '',
       subject: '妈的又出Bug了，赶紧去调。',
       text: '',
-      html: mes,
+      html: msg,
   }
 
   if (app.env === 'production') {

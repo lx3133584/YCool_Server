@@ -43,21 +43,21 @@ import cheerio from 'cheerio'
       }
  */
 export async function downloadChapters (ctx) {
-  let results
+  let data
   const id = ctx.params.id
   const options = {
     attributes: ['title', 'content', 'number'],
     order: 1
   }
   try {
-    results = await Chapter.getDirectory(id, options)
+    data = await Chapter.getDirectory(id, options)
   } catch (err) {
     Handle.sendEmail(e.message)
     ctx.throw(422, err.message)
   }
 
   ctx.body = {
-    results
+    data
   }
 }
 
@@ -118,10 +118,10 @@ export async function searchFromZH (ctx) {
     ctx.throw(422, err.message)
   }
 
-  const response = JSON.parse(body)
+  const data = JSON.parse(body)
 
   ctx.body = {
-    response
+    data
   }
 }
 
@@ -179,6 +179,7 @@ export async function searchFromBQK (ctx) {
   const $ = cheerio.load(body, {decodeEntities: false})
 
   const length = $('.result-game-item-detail').length
+  const count = +$('#results>.support-text-top').text().match(/\d+/g)[0]
 
   //爬取小说信息，用于展示
   let arr = []
@@ -201,7 +202,8 @@ export async function searchFromBQK (ctx) {
   }
 
   ctx.body = {
-    response: arr
+    data: arr,
+    count
   }
 }
 
@@ -235,31 +237,34 @@ export async function searchFromBQK (ctx) {
  */
 export async function getNovel (ctx) {
   const user = ctx.state.user
-  const { name, url } = ctx.request.body.novel
+  const name = ctx.request.body.name
+  const url = ctx.request.body.url
   try {
-    var novel = await Novel.findOne({name: name})
+    var novel = await Novel.findOne({name})
   } catch (e) {
     ctx.throw(422, e.message)
   }
-
+  const response = novel.toJSON()
   //判断数据库中是否有该小说，没有在去网站爬取
   if (novel) {
-    try {
-      var bookshelf = await Bookshelf.findOne({novel: novel.id, user: user.id})
-    } catch (e) {
-      Handle.sendEmail(e.message)
-      ctx.throw(422, e.message)
-    }
-
-    const response = novel.toJSON()
-    if (bookshelf) {
-      response.join = true
-    }
-    else {
+    if (user) {
+      let bookshelf
+      try {
+        bookshelf = await Bookshelf.findOne({novel: novel.id, user: user.id})
+      } catch (e) {
+        Handle.sendEmail(e.message)
+        ctx.throw(422, e.message)
+      }
+      if (bookshelf) {
+        response.join = true
+      } else {
+        response.join = false
+      }
+    } else {
       response.join = false
     }
     ctx.body = {
-      novelInfo: response
+      data: response
     }
   }
   else {
@@ -315,7 +320,7 @@ export async function getNovel (ctx) {
     const response = novel.toJSON()
     response.join = false
     ctx.body = {
-      novelInfo: response
+      data: response
     }
   }
 }
