@@ -166,10 +166,10 @@ export async function searchFromZH (ctx) {
        }
  */
 export async function searchFromBQK (ctx) {
-  const name = ctx.query.name
+  const {name, page_no} = ctx.query
 
   //笔趣库搜索网站
-  const url = `http://zhannei.baidu.com/cse/search?s=2041213923836881982&q=${name}`
+  const url = `http://zhannei.baidu.com/cse/search?s=2041213923836881982&q=${name}&p=${page_no}`
   try {
     var body = await Crawler.request(encodeURI(url))
   } catch (e) {

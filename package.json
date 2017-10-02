@@ -1,5 +1,5 @@
 {
-  "name": "YCool_server",
+  "name": "novel_server",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -20,15 +20,15 @@
     "passportjs",
     "apidoc"
   ],
-  "author": "XiaoWu",
+  "author": "Hymn",
   "license": "MIT",
   "apidoc": {
-    "title": "YCool--API文档",
+    "title": "novel--API文档",
     "url": "localhost:5000"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/dlyt/YCool_Server.git"
+    "url": "https://github.com/lx3133584/novel_Server"
   },
   "dependencies": {
     "apidoc": "^0.17.5",
