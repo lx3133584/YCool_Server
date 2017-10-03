@@ -13,7 +13,7 @@ import * as Crawler from '../../utils/crawler'
   @apiExample Example usage:
     curl -H "Content-Type: application/json" -X GET http://localhost:5000/chapters/58c4cbce9e4dad30f80d34e7
 
-  @apiParam {String} novelId 小说ID.
+  @apiParam {String} id 小说ID.
   @apiParam {String} num 小说章节.
 
   @apiSuccessExample {json} Success-Response:
@@ -42,10 +42,10 @@ import * as Crawler from '../../utils/crawler'
       }
  */
 export async function getChapterInfo (ctx) {
-  let {novelId, num} = ctx.request.body
+  let {id, num} = ctx.request.body
   let detail,novel
   try {
-    detail = await Chapter.findByNumber(novelId, num)
+    detail = await Chapter.findByNumber(id, +num)
     novel = await Novel.findOne({_id: detail.novel})
   } catch (e) {
     Handle.sendEmail(e.message)
@@ -69,9 +69,9 @@ export async function getChapterInfo (ctx) {
       ctx.throw(422, e.message)
     }
   }
-  const response = detail
+  const data = detail
   ctx.body = {
-    response
+    data
   }
 }
 

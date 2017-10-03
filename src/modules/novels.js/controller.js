@@ -217,9 +217,8 @@ export async function searchFromBQK (ctx) {
   @apiExample Example usage:
     curl -H "Content-Type: application/json" "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU4YjhmZDRkODUyYTE1YzliNmYyNjI3MSIsImlhdCI6MTQ4ODU1MTc2N30.IEgYwmgyqOBft9s38ool7cmuC2yIlWYVLf4WQzcbqAI" -X GET http://localhost:5000/novels/acquire
 
-  @apiParam {Object} novel          小说对象 (必需)
-  @apiParam {String} novel.name    小说名称.
-  @apiParam {String} novel.url     爬取网站的url.
+  @apiParam {String} name    小说名称.
+  @apiParam {String} url     爬取网站的url.
 
   @apiSuccessExample {json} Success-Response:
     HTTP/1.1 200 OK
@@ -237,16 +236,21 @@ export async function searchFromBQK (ctx) {
  */
 export async function getNovel (ctx) {
   const user = ctx.state.user
-  const name = ctx.request.body.name
-  const url = ctx.request.body.url
+  const {name, url, id} = ctx.request.body
+  let novel
   try {
-    var novel = await Novel.findOne({name})
+    if (id && id !== '0') {
+      novel = await Novel.findOne({_id: id})
+    } else {
+      novel = await Novel.findOne({name})
+    }
   } catch (e) {
     ctx.throw(422, e.message)
   }
-  const response = novel.toJSON()
+ 
   //判断数据库中是否有该小说，没有在去网站爬取
   if (novel) {
+    const response = novel.toJSON()
     if (user) {
       let bookshelf
       try {
@@ -361,7 +365,7 @@ export async function getNovel (ctx) {
       }
  */
 export async function getDirectory (ctx) {
-  let results
+  let results, novel
   const id = ctx.params.id
   const options = {
     where: {novel: id},
@@ -370,13 +374,17 @@ export async function getDirectory (ctx) {
   }
   try {
     results = await Chapter.getDirectory(options)
+    novel = await Novel.findOne({_id: id})
   } catch (e) {
     Handle.sendEmail(e.message)
     ctx.throw(422, e.message)
   }
 
   ctx.body = {
-    results
+    data: {
+      list: results,
+      title: novel.name
+    }
   }
 }
 
