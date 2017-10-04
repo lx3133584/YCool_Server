@@ -1,7 +1,7 @@
 import { ensureUser } from '../../middleware/validators'
 import * as user from './controller'
 
-export const baseUrl = '/users'
+export const baseUrl = '/user'
 
 export default [
   {
@@ -9,6 +9,20 @@ export default [
     route: '/tourists',
     handlers: [
       user.createTourist
+    ]
+  },
+  {
+    method: 'POST',
+    route: '/register',
+    handlers: [
+      user.createUser
+    ]
+  },
+  {
+    method: 'POST',
+    route: '/login',
+    handlers: [
+      user.loginUser
     ]
   },
 ]

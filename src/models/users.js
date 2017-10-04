@@ -6,10 +6,9 @@ import jwt from 'jsonwebtoken'
 const User = new mongoose.Schema({
   type: { type: String, default: 'User' },
   name: { type: String },
-  email: { type: String },
-  username: { type: String },
+  account: { type: String, unique: true },
   password: { type: String },
-  uuid: { type: String, unique: true }
+  password2: { type: String },
 })
 
 User.pre('save', function preSave (next) {
@@ -18,7 +17,7 @@ User.pre('save', function preSave (next) {
   if (!user.isModified('password')) {
     return next()
   }
-
+  
   new Promise((resolve, reject) => {
     bcrypt.genSalt(10, (err, salt) => {
       if (err) { return reject(err) }
@@ -28,9 +27,7 @@ User.pre('save', function preSave (next) {
   .then(salt => {
     bcrypt.hash(user.password, salt, (err, hash) => {
       if (err) { throw new Error(err) }
-
       user.password = hash
-
       next(null)
     })
   })

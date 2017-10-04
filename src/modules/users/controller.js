@@ -1,4 +1,5 @@
 import User from '../../models/users'
+import passport from 'koa-passport'
 
 
 /**
@@ -54,5 +55,73 @@ export async function createTourist (ctx) {
     token
   }
 }
+export async function createUser (ctx) {
+  const {account, password, password2} = ctx.request.body
+  if (password !== password2) {
+    ctx.throw(422, '两次密码输入不一致')
+  }
+  //先查
+  try {
+    var user = await User.findOne({account})
+  } catch (err) {
+    Handle.sendEmail(err.message)
+    ctx.throw(422, err.message)
+  }
 
+  if (user) {
+    ctx.throw(422, '账号已经注册')
+  } 
+  else {
+    user = new User(ctx.request.body)
+    try {
+      await user.save()
+    } catch (err) {
+      Handle.sendEmail(err.message)
+      ctx.throw(422, err.message)
+    }
+
+    var token = user.generateToken()
+
+    delete user.password
+    
+    ctx.body = {
+      token,
+      user
+    }
+  }
+  
+}
+
+export async function loginUser (ctx, next) {
+  const {account, password} = ctx.request.body
+  try {
+    var user = await User.findOne({account})
+  } catch (err) {
+    Handle.sendEmail(err.message)
+    ctx.throw(422, err.message)
+  }
+
+  if (!user) {
+    ctx.throw(401, '账号不存在')
+  }
+  try {
+    var isMatch = await user.validatePassword(password)
+  } catch (err) {
+    Handle.sendEmail(err.message)
+    ctx.throw(422, err.message)
+  }
+  if (!isMatch) {
+    ctx.throw(401, '密码错误')
+  }
+  const token = user.generateToken()
+  
+  const response = user.toJSON()
+
+  delete response.password
+
+  ctx.body = {
+    token,
+    user: response
+  }
+}
 
