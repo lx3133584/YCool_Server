@@ -1,7 +1,7 @@
 import { ensureUser } from '../../middleware/validators'
 import * as bookshelf from './controller'
 
-export const baseUrl = '/bookshelfs'
+export const baseUrl = '/bookshelf'
 
 export default [
   {
@@ -22,9 +22,9 @@ export default [
   },
   {
     method: 'POST',
-    route: '/delect',
+    route: '/delete',
     handlers: [
-      bookshelf.delectNovel
+      bookshelf.deleteNovel
     ]
   },
   {

@@ -1,4 +1,4 @@
-import Bookshelf from '../../models/bookshelfs'
+import Bookshelf from '../../models/bookshelf'
 import Chapter from '../../models/chapters'
 import Novel from '../../models/novels'
 import * as Crawler from '../../utils/crawler'

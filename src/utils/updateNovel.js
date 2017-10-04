@@ -1,4 +1,4 @@
-import Bookshelf from '../models/bookshelfs'
+import Bookshelf from '../models/bookshelf'
 import Novel from '../models/novels'
 import Chapter from '../models/chapters'
 import Schedule from 'node-schedule'

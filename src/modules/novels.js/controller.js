@@ -1,5 +1,5 @@
 import Novel from '../../models/novels'
-import Bookshelf from '../../models/bookshelfs'
+import Bookshelf from '../../models/bookshelf'
 import Chapter from '../../models/chapters'
 
 import * as Crawler from '../../utils/crawler'
@@ -254,7 +254,7 @@ export async function getNovel (ctx) {
     if (user) {
       let bookshelf
       try {
-        bookshelf = await Bookshelf.findOne({novel: novel.id, user: user.id})
+        bookshelf = await Bookshelf.findOne({novel: novel.id, user: user._id})
       } catch (e) {
         Handle.sendEmail(e.message)
         ctx.throw(422, e.message)

@@ -1,16 +1,16 @@
-import Bookshelf from '../../models/bookshelfs'
+import Bookshelf from '../../models/bookshelf'
 import Chapter from '../../models/chapters'
 import Novel from '../../models/novels'
 
 /**
-  @api {GET} /bookshelfs 获取书架列表
+  @api {GET} /bookshelf 获取书架列表
   @apiPermission User
   @apiVersion 1.0.0
   @apiName 获取书架列表
-  @apiGroup Bookshelfs
+  @apiGroup Bookshelf
 
   @apiExample Example usage:
-    curl -H "Content-Type: application/json" "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU4YjhmZDRkODUyYTE1YzliNmYyNjI3MSIsImlhdCI6MTQ4ODU1MTc2N30.IEgYwmgyqOBft9s38ool7cmuC2yIlWYVLf4WQzcbqAI" -X GET localhost:5000/bookshelfs
+    curl -H "Content-Type: application/json" "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU4YjhmZDRkODUyYTE1YzliNmYyNjI3MSIsImlhdCI6MTQ4ODU1MTc2N30.IEgYwmgyqOBft9s38ool7cmuC2yIlWYVLf4WQzcbqAI" -X GET localhost:5000/bookshelf
 
   @apiSuccessExample {json} Success-Response:
     HTTP/1.1 200 OK
@@ -50,26 +50,26 @@ import Novel from '../../models/novels'
 export async function getBookshelf (ctx) {
   const user = ctx.state.user
   try {
-    var list = await Bookshelf.getList(user.id)
+    var data = await Bookshelf.getList(user.id)
   } catch (e) {
     Handle.sendEmail(e.message)
     ctx.throw(422, e.message)
   }
 
   ctx.body = {
-    list: list
+    data
   }
 }
 
 /**
-  @api {POST} /bookshelfs/order 订阅小说
+  @api {POST} /bookshelf/order 订阅小说
   @apiPermission User
   @apiVersion 1.0.0
   @apiName 订阅小说
-  @apiGroup Bookshelfs
+  @apiGroup Bookshelf
 
   @apiExample Example usage:
-    curl -H "Content-Type: application/json" "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU4YjhmZDRkODUyYTE1YzliNmYyNjI3MSIsImlhdCI6MTQ4ODU1MTc2N30.IEgYwmgyqOBft9s38ool7cmuC2yIlWYVLf4WQzcbqAI" -X GET localhost:5000/bookshelfs/order
+    curl -H "Content-Type: application/json" "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU4YjhmZDRkODUyYTE1YzliNmYyNjI3MSIsImlhdCI6MTQ4ODU1MTc2N30.IEgYwmgyqOBft9s38ool7cmuC2yIlWYVLf4WQzcbqAI" -X GET localhost:5000/bookshelf/order
 
   @apiParam {String} id 小说ID.
 
@@ -89,6 +89,14 @@ export async function getBookshelf (ctx) {
 export async function orderNovel (ctx) {
   const user = ctx.state.user
   const novelId = ctx.request.body.id
+  try {
+    var isAdd = await Bookshelf.findOne({novel: novelId, user: user._id})
+  } catch (err) {
+    ctx.throw(422, err.message)
+  }
+  if (isAdd) {
+    ctx.throw(422, '已经添加到书架')
+  }
 
   try {
     var chapter = await Chapter.getFirstChapter(novelId)
@@ -115,13 +123,13 @@ export async function orderNovel (ctx) {
 }
 
 /**
-  @api {POST} /bookshelfs/delect 取消订阅
+  @api {POST} /bookshelf/delete 取消订阅
   @apiVersion 1.0.0
   @apiName 取消订阅
-  @apiGroup Bookshelfs
+  @apiGroup Bookshelf
 
   @apiExample Example usage:
-    curl -H "Content-Type: application/json" -X GET localhost:5000/bookshelfs/delect
+    curl -H "Content-Type: application/json" -X GET localhost:5000/bookshelf/delete
 
   @apiParam {String} id 小说ID.
 
@@ -138,7 +146,7 @@ export async function orderNovel (ctx) {
       "error": ""
     }
  */
-export async function delectNovel (ctx) {
+export async function deleteNovel (ctx) {
   const id = ctx.request.body.id
   try {
     await Bookshelf.remove({_id: id})
@@ -153,14 +161,14 @@ export async function delectNovel (ctx) {
 }
 
 /**
-  @api {POST} /bookshelfs 记录最后阅读章节
+  @api {POST} /bookshelf 记录最后阅读章节
   @apiPermission User
   @apiVersion 1.0.0
   @apiName 记录最后阅读章节
-  @apiGroup Bookshelfs
+  @apiGroup Bookshelf
 
   @apiExample Example usage:
-    curl -H "Content-Type: application/json" "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU4YjhmZDRkODUyYTE1YzliNmYyNjI3MSIsImlhdCI6MTQ4ODU1MTc2N30.IEgYwmgyqOBft9s38ool7cmuC2yIlWYVLf4WQzcbqAI" -X GET localhost:5000/bookshelfs/change
+    curl -H "Content-Type: application/json" "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU4YjhmZDRkODUyYTE1YzliNmYyNjI3MSIsImlhdCI6MTQ4ODU1MTc2N30.IEgYwmgyqOBft9s38ool7cmuC2yIlWYVLf4WQzcbqAI" -X GET localhost:5000/bookshelf/change
 
   @apiParam num 小说章节
   @apiParam x   页数

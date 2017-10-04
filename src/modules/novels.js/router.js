@@ -36,6 +36,7 @@ export default [
     method: 'POST',
     route: '/acquire',
     handlers: [
+      ensureUser,
       novel.getNovel
     ]
   },

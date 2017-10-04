@@ -15,7 +15,6 @@ export async function ensureUser (ctx, next) {
   } catch (err) {
     ctx.throw(401)
   }
-
   ctx.state.user = await User.findById(decoded.id, '-password')
   if (!ctx.state.user) {
     ctx.throw(401)

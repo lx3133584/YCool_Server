@@ -12,7 +12,7 @@ const Novel = new mongoose.Schema({
   img: { type: String, default: '' },
   updateTime: { type: String },
   lastChapterTitle: { type: String },
-  countChapter: { type: String },
+  countChapter: { type: Number },
 })
 
 

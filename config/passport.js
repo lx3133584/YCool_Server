@@ -16,11 +16,11 @@ passport.deserializeUser(async (id, done) => {
 })
 
 passport.use('local', new Strategy({
-  usernameField: 'username',
+  usernameField: 'account',
   passwordField: 'password'
-}, async (username, password, done) => {
+}, async (account, password, done) => {
   try {
-    const user = await User.findOne({ username })
+    const user = await User.findOne({ account })
     if (!user) { return done(null, false) }
 
     try {
