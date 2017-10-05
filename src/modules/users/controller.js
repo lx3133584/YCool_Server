@@ -102,7 +102,7 @@ export async function loginUser (ctx, next) {
   }
 
   if (!user) {
-    ctx.throw(401, '账号不存在')
+    ctx.throw(403, '账号不存在')
   }
   try {
     var isMatch = await user.validatePassword(password)
@@ -111,7 +111,7 @@ export async function loginUser (ctx, next) {
     ctx.throw(422, err.message)
   }
   if (!isMatch) {
-    ctx.throw(401, '密码错误')
+    ctx.throw(403, '密码错误')
   }
   const token = user.generateToken()
   
@@ -125,3 +125,10 @@ export async function loginUser (ctx, next) {
   }
 }
 
+
+export async function getInfo (ctx) {
+  const user = ctx.state.user
+  ctx.body = {
+    data: user
+  }
+}

@@ -25,4 +25,12 @@ export default [
       user.loginUser
     ]
   },
+  {
+    method: 'GET',
+    route: '/',
+    handlers: [
+      ensureUser,
+      user.getInfo
+    ]
+  },
 ]
