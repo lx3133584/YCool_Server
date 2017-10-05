@@ -58,7 +58,7 @@ export function getChapterContent(url) {
       if (!err) {
         const html = iconv.decode(body, 'gb2312')
         const $ = cheerio.load(html, {decodeEntities: false})
-        const content = $('#content').text()
+        const content = $('#content').html()
         resolve(content)
       }
       else {

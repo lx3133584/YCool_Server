@@ -43,7 +43,7 @@ import * as Crawler from '../../utils/crawler'
  */
 export async function getChapterInfo (ctx) {
   let {id, num} = ctx.request.body
-  let detail,novel
+  let detail, novel
   try {
     detail = await Chapter.findByNumber(id, +num)
     novel = await Novel.findOne({_id: detail.novel})
@@ -69,11 +69,42 @@ export async function getChapterInfo (ctx) {
       ctx.throw(422, e.message)
     }
   }
-  const data = detail
+  let data = detail
   ctx.body = {
-    data
+    data,
+    countChapter: novel.countChapter
   }
 }
+
+export async function updateProgress (ctx) {
+  const user = ctx.state.user
+  let {id, num} = ctx.request.body
+  let novel
+  try {
+    novel = await Bookshelf.findOne({user: user.id, novel: id})
+  } catch (e) {
+    Handle.sendEmail(e.message)
+    ctx.throw(422, e.message)
+  }
+
+  if (!novel) {
+    ctx.throw(204)
+  }
+  else {
+    try {
+      novel.progress = +num + 1
+      await novel.save()
+    } catch (e) {
+      Handle.sendEmail(e.message)
+      ctx.throw(422, e.message)
+    }
+  }
+  ctx.body = {
+    success: true
+  }
+}
+
+
 
 /**
   @api {GET} /chapters/firstRender/:id 获取首次渲染章节

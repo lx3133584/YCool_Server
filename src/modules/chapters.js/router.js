@@ -12,6 +12,14 @@ export default [
     ]
   },
   {
+    method: 'POST',
+    route: '/progress',
+    handlers: [
+      ensureUser,
+      chapter.updateProgress
+    ]
+  },
+  {
     method: 'GET',
     route: '/firstRender/:id',
     handlers: [
