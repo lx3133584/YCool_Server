@@ -6,6 +6,5 @@ if (env === 'production') {
 } else {
   config = require(`./env/development`).default;
 }
-console.log(env);
 
 export default Object.assign({}, common, config)
