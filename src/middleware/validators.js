@@ -22,3 +22,19 @@ export async function ensureUser (ctx, next) {
 
   return next()
 }
+export async function ensureUserNotCatch (ctx, next) {
+  const token = getToken(ctx)
+  if (!token) {
+    return next()
+  }
+
+  let decoded = null
+  try {
+    decoded = verify(token, config.token)
+  } catch (err) {
+    return next()
+  }
+  ctx.state.user = await User.findById(decoded.id, ['-password', '-password2'])
+
+  return next()
+}

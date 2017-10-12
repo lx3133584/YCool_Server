@@ -179,7 +179,6 @@ export async function searchFromBQK (ctx) {
   const $ = cheerio.load(body, {decodeEntities: false})
 
   const length = $('.result-game-item-detail').length
-  const count = +$('#results>.support-text-top').text().match(/\d+/g)[0]
 
   //爬取小说信息，用于展示
   let arr = []
@@ -202,8 +201,7 @@ export async function searchFromBQK (ctx) {
   }
 
   ctx.body = {
-    data: arr,
-    count
+    data: arr
   }
 }
 
@@ -236,6 +234,7 @@ export async function searchFromBQK (ctx) {
  */
 export async function getNovel (ctx) {
   const user = ctx.state.user
+  
   const {name, url, id} = ctx.request.body
   let novel
   try {
@@ -247,7 +246,7 @@ export async function getNovel (ctx) {
   } catch (e) {
     ctx.throw(422, e.message)
   }
- 
+
   //判断数据库中是否有该小说，没有在去网站爬取
   if (novel) {
     const response = novel.toJSON()

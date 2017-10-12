@@ -1,4 +1,4 @@
-import { ensureUser } from '../../middleware/validators'
+import { ensureUser, ensureUserNotCatch } from '../../middleware/validators'
 import * as novel from './controller'
 
 export const baseUrl = '/novels'
@@ -36,7 +36,7 @@ export default [
     method: 'POST',
     route: '/acquire',
     handlers: [
-      ensureUser,
+      ensureUserNotCatch,
       novel.getNovel
     ]
   },
