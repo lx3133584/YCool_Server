@@ -4,10 +4,6 @@ import Chapter from '../models/chapters'
 import Schedule from 'node-schedule'
 import * as Crawler from './crawler'
 
-import nodemailer from  'nodemailer'
-import wellknown from 'nodemailer-wellknown'
-import smtpTransport from 'nodemailer-smtp-transport'
-
 export function start() {
   Schedule.scheduleJob('30 * * * * *', function () {
     update()
@@ -84,23 +80,9 @@ async function sendRemindEmail(novel) {
   }
 
   userEmails.forEach(function(item) {
-    const email = item.user.email
     const name = item.novel.name
-    const config = wellknown("QQ")
-    config.auth = {
-      user: '',
-      pass: '',
-    }
 
-    const transporter = nodemailer.createTransport(smtpTransport(config))
-
-    const mailOptions = {
-        from: '',
-        to: email,
-        subject: `${name}更新了，Happy!`,
-        text: '',
-        html: '',
-    }
+    const mailOptions =`${name}更新了，Happy!`
 
     transporter.sendMail(mailOptions, function(error, info){
         if(error){
@@ -110,7 +92,6 @@ async function sendRemindEmail(novel) {
         else {
           console.log('Message sent: ' + info.response)
         }
-
     })
   })
 }
