@@ -26,6 +26,14 @@ export default [
     ]
   },
   {
+    method: 'POST',
+    route: '/edit_name',
+    handlers: [
+      ensureUser,
+      user.editName
+    ]
+  },
+  {
     method: 'GET',
     route: '/',
     handlers: [

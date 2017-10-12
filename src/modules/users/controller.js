@@ -70,7 +70,7 @@ export async function createUser (ctx) {
 
   if (user) {
     ctx.throw(422, '账号已经注册')
-  } 
+  }
   else {
     user = new User(ctx.request.body)
     try {
@@ -83,13 +83,13 @@ export async function createUser (ctx) {
     var token = user.generateToken()
 
     delete user.password
-    
+
     ctx.body = {
       token,
       user
     }
   }
-  
+
 }
 
 export async function loginUser (ctx, next) {
@@ -114,7 +114,7 @@ export async function loginUser (ctx, next) {
     ctx.throw(403, '密码错误')
   }
   const token = user.generateToken()
-  
+
   const response = user.toJSON()
 
   delete response.password
@@ -125,6 +125,24 @@ export async function loginUser (ctx, next) {
   }
 }
 
+export async function editName (ctx, next) {
+  let user = ctx.state.user
+  const {name} = ctx.request.body
+  if (!name) ctx.throw(422, '昵称不能为空')
+
+  user.name = name
+
+  try {
+    await user.save()
+  } catch (e) {
+    Handle.sendEmail(e.message)
+    ctx.throw(422, e.message)
+  }
+
+  ctx.body = {
+    success: true
+  }
+}
 
 export async function getInfo (ctx) {
   const user = ctx.state.user
