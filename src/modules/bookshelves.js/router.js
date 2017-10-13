@@ -24,6 +24,7 @@ export default [
     method: 'POST',
     route: '/delete',
     handlers: [
+      ensureUser,
       bookshelf.deleteNovel
     ]
   },
