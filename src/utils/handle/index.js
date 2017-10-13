@@ -14,8 +14,7 @@ handle.success = (data = {}) => {
 //报错时，保存信息到数据库
 handle.sendEmail = (msg) => {
   const data = {
-    message: msg,
-    date: new Date
+    message: msg
   }
   const newMessage = new Message(data)
   newMessage.save()

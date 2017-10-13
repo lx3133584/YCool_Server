@@ -1,6 +1,7 @@
 import Novel from '../../models/novels'
 import Bookshelf from '../../models/bookshelf'
 import Chapter from '../../models/chapters'
+import Rank from '../../models/rank'
 
 import * as Crawler from '../../utils/crawler'
 import simplePinyin from 'simple-pinyin'
@@ -52,7 +53,7 @@ export async function downloadChapters (ctx) {
   try {
     data = await Chapter.getDirectory(id, options)
   } catch (err) {
-    Handle.sendEmail(e.message)
+    Handle.sendEmail(err.message)
     ctx.throw(422, err.message)
   }
 
@@ -169,7 +170,7 @@ export async function searchFromBQK (ctx) {
   const {name, page_no} = ctx.query
 
   //笔趣库搜索网站
-  const url = `http://zhannei.baidu.com/cse/search?s=2041213923836881982&q=${name}&p=${page_no}`
+  const url = `http://so.37zw.net/cse/search?s=17612299809334605464&q=${name}&p=${page_no}`
   try {
     var body = await Crawler.request(encodeURI(url))
   } catch (e) {
@@ -234,7 +235,7 @@ export async function searchFromBQK (ctx) {
  */
 export async function getNovel (ctx) {
   const user = ctx.state.user
-  
+
   const {name, url, id} = ctx.request.body
   let novel
   try {
@@ -286,7 +287,7 @@ export async function getNovel (ctx) {
     novelInfo.url = url
     novelInfo.name = $('#info h1')[0].children[0].data
     novelInfo.author = author.substring(27, author.length)
-    novelInfo.img = `http://www.37zw.com${img}`
+    novelInfo.img = `http://www.37zw.net${img}`
     novelInfo.updateTime = updateTime.substring(5, updateTime.length)
     novelInfo.introduction = $('#intro p')[0].children[0].data
 
@@ -301,9 +302,8 @@ export async function getNovel (ctx) {
 
     const novelId = novel.id
 
-    await Crawler.getNovel($, novelId)
-
     try {
+      await Crawler.getNovel($, novelId)
       var lastChapter = await Chapter.getLastTitle(novelId)
       var count = await Chapter.getCount(novelId)
     } catch (e) {
@@ -384,6 +384,20 @@ export async function getDirectory (ctx) {
       list: results,
       title: novel.name
     }
+  }
+}
+
+export async function getRank(ctx) {
+
+  try {
+    var results = await Rank.getAllTypesList()
+  } catch (e) {
+    Handle.sendEmail(e.message)
+    ctx.throw(422, e.message)
+  }
+
+  ctx.body = {
+    data: results
   }
 }
 

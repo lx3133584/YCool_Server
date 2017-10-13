@@ -5,9 +5,9 @@ export const baseUrl = '/test'
 export default [
   {
     method: 'GET',
-    route: '/',
+    route: '/update',
     handlers: [
-      test.getChapters
+      test.updateNovel
     ]
   },
   {

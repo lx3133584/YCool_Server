@@ -4,8 +4,8 @@ import * as Crawler from '../../utils/crawler'
 import * as UpdateNovel from '../../utils/updateNovel'
 
 
-export async function getChapters (ctx) {
-  UpdateNovel.start()
+export async function updateNovel (ctx) {
+  await UpdateNovel.updateRank()
   ctx.body = {
     success: true
   }
