@@ -189,15 +189,12 @@ export async function updateRank() {
       } catch (e) {
         Handle.sendEmail(e.message)
       }
-<<<<<<< HEAD
     } else {
       try {
         await Rank.update({type: typeName}, {'$unset': {rank: 1} })
       } catch (e) {
         Handle.sendEmail(e.message)
       }
-=======
->>>>>>> e3c160a013a62cd2ff22a264c53e690232b734d2
     }
 
     _this.find('ul>li>a').each(async function () {
