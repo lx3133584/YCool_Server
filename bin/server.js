@@ -42,7 +42,7 @@ app.listen(config.port, () => {
 
 //更新小说爬虫
 const UpdateNovel = require('../src/utils/updateNovel')
-if (app.env === 'production') {
+if (app.env !== 'development') {
   UpdateNovel.start()
 }
 

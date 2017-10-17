@@ -7,7 +7,7 @@ import * as Crawler from './crawler'
 
 export function start() {
   var rule = new Schedule.RecurrenceRule();
-  var times = [1, 5, 9, 13, 17, 21];
+  var times = [1, 9, 17];
   rule.hour = times;
   Schedule.scheduleJob(rule, function () {
     updateVip()
@@ -66,39 +66,10 @@ async function updateVip() {
           Handle.sendEmail(e.message)
         }
         //发送邮件并更新小说信息
-        sendRemindEmail(item)
+        sendEmail(item.name + '更新啦')
       }
     }
   }
-}
-
-
-async function sendRemindEmail(novel) {
-  let userEmails
-  try {
-    userEmails = await Bookshelf.find({novel: novel.id})
-                                .populate('user', ['email'])
-                                .populate('novel', ['name'])
-                                .exec()
-  } catch (e) {
-    Handle.sendEmail(e.message)
-  }
-
-  userEmails.forEach(function(item) {
-    const name = item.novel.name
-
-    const mailOptions =`${name}更新了，Happy!`
-
-    transporter.sendMail(mailOptions, function(error, info){
-        if(error){
-          console.log(error);
-          Handle.sendEmail(error.message)
-        }
-        else {
-          console.log('Message sent: ' + info.response)
-        }
-    })
-  })
 }
 
 async function getNovel(name, url) {
@@ -111,12 +82,9 @@ async function getNovel(name, url) {
   }
 
   //判断数据库中是否有该小说，没有在去网站爬取
-  if (novel) {
-    return novel
-  }
+  if (novel) return novel;
   try {
     var $ = await Crawler.getHtml(url)
-    await setTimeout((f) => f, 10000)
   } catch (e) {
     Handle.sendEmail(e.message)
   }

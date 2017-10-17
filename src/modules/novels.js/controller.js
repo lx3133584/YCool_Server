@@ -240,7 +240,7 @@ export async function getNovel (ctx) {
   let novel
   try {
     if (id && id !== '0') {
-      novel = await Novel.findOne({_id: id})
+      novel = await Novel.findOne({id})
     } else {
       novel = await Novel.findOne({name})
     }
