@@ -161,7 +161,9 @@ export async function orderNovel (ctx) {
  */
 export async function deleteNovel (ctx) {
   const id = ctx.request.body.id
+  let book
   try {
+    book = await Bookshelf.findById(id)
     await Bookshelf.remove({_id: id})
   } catch (e) {
     Handle.sendEmail(e.message)
@@ -172,7 +174,7 @@ export async function deleteNovel (ctx) {
     success: true
   }
 
-  await toggleNovelType(id, 'Normal')
+  await toggleNovelType(book.novel, 'Normal')
 }
 
 /**
