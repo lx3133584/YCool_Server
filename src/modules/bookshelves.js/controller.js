@@ -172,7 +172,7 @@ export async function deleteNovel (ctx) {
     success: true
   }
 
-  await toggleNovelType(novelId, 'Normal')
+  await toggleNovelType(id, 'Normal')
 }
 
 /**
