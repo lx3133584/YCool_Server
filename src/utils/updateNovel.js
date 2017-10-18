@@ -66,7 +66,7 @@ export async function updateVip() {
           Handle.sendEmail(e.message)
         }
         //发送邮件并更新小说信息
-        sendEmail(item.name + '更新啦', 'update')
+        Handle.sendEmail('《' + item.name + '》 更新啦', 'update')
       }
     }
   }
@@ -83,7 +83,7 @@ async function getNovel(name, url) {
 
   //判断数据库中是否有该小说，没有在去网站爬取
   if (novel) return novel;
-  
+
   try {
     var $ = await Crawler.getHtml(url)
   } catch (e) {

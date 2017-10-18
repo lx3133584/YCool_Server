@@ -5,7 +5,7 @@ import * as UpdateNovel from '../../utils/updateNovel'
 
 
 export async function updateNovel (ctx) {
-  await UpdateNovel.updateRank()
+  await UpdateNovel.updateVip()
   ctx.body = {
     success: true
   }
