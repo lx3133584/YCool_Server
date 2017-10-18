@@ -2,6 +2,16 @@ import Bookshelf from '../../models/bookshelf'
 import Chapter from '../../models/chapters'
 import Novel from '../../models/novels'
 
+// 切换小说类型
+async function toggleNovelType(id, type = 'Normal') {
+  try {
+    var novel = await Novel.findById(id)
+    novel.type = type
+    await novel.save()
+  } catch (e) {
+    Handle.sendEmail(e.message)
+  }
+}
 /**
   @api {GET} /bookshelf 获取书架列表
   @apiPermission User
@@ -120,6 +130,9 @@ export async function orderNovel (ctx) {
   ctx.body = {
     success: true
   }
+
+  await toggleNovelType(novelId, 'VIP')
+
 }
 
 /**
@@ -158,6 +171,8 @@ export async function deleteNovel (ctx) {
   ctx.body = {
     success: true
   }
+
+  await toggleNovelType(novelId, 'Normal')
 }
 
 /**

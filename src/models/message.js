@@ -6,6 +6,7 @@ const ObjectId = Schema.Types.ObjectId
 const Message = new mongoose.Schema({
   date: { type: Date, default: Date.now },
   message: { type: String },
+  type: { type: String }
 })
 
 

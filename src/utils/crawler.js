@@ -47,9 +47,10 @@ export async function getNovel($, id) {
       number: i,
       novel: id,
     })
-
+    
     await chapter.save()
   }
+
 }
 
 export function getChapterContent(url) {

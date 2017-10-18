@@ -12,9 +12,10 @@ handle.success = (data = {}) => {
 }
 
 //报错时，保存信息到数据库
-handle.sendEmail = (msg) => {
+handle.sendEmail = (msg, type = 'error') => {
   const data = {
-    message: msg
+    message: msg,
+    type
   }
   const newMessage = new Message(data)
   newMessage.save()

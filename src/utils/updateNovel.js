@@ -15,7 +15,7 @@ export function start() {
   })
 }
 
-async function updateVip() {
+export async function updateVip() {
   let crawlerList,      //获取所有需要更新提醒的小说
       $,                //DOM
       length,           //章节数量
@@ -66,7 +66,7 @@ async function updateVip() {
           Handle.sendEmail(e.message)
         }
         //发送邮件并更新小说信息
-        sendEmail(item.name + '更新啦')
+        sendEmail(item.name + '更新啦', 'update')
       }
     }
   }
@@ -83,6 +83,7 @@ async function getNovel(name, url) {
 
   //判断数据库中是否有该小说，没有在去网站爬取
   if (novel) return novel;
+  
   try {
     var $ = await Crawler.getHtml(url)
   } catch (e) {
@@ -140,32 +141,9 @@ export async function updateRank() {
   const typeList = $('#main .novelslist .content')
   typeList.each(async function () {
     const _this = $(this)
-    const typeName = _this.children('h2').text()
+    const type = _this.children('h2').text()
 
-    try {
-      var rank = await Rank.findOne({type: typeName})
-    } catch (e) {
-      Handle.sendEmail(e.message)
-    }
-
-    if (!rank) {
-      rank = new Rank({
-        type: typeName,
-      })
-      try {
-        await rank.save()
-      } catch (e) {
-        Handle.sendEmail(e.message)
-      }
-    } else {
-      try {
-        await Rank.update({type: typeName}, {'$unset': {rank: 1} })
-      } catch (e) {
-        Handle.sendEmail(e.message)
-      }
-    }
-
-    _this.find('ul>li>a').each(async function () {
+    _this.find('ul>li>a').each(async function (num) {
       const name = $(this).text()
       const url = $(this).attr('href')
       let novel
@@ -176,8 +154,25 @@ export async function updateRank() {
       }
       if (!novel) return
 
+      let rank
       try {
-        await Rank.update({type: typeName}, {'$push': {rank: novel.id} })
+        rank = await Rank.findOne({key: type + num})
+      } catch (e) {
+        Handle.sendEmail(e.message)
+      }
+
+      if (rank) {
+        rank.novel = novel.id
+      } else {
+        rank = new Rank({
+          type,
+          novel: novel.id,
+          num,
+        })
+      }
+
+      try {
+        await rank.save()
       } catch (e) {
         Handle.sendEmail(e.message)
       }

@@ -46,7 +46,7 @@ export async function getChapterInfo (ctx) {
   let detail, novel
   try {
     detail = await Chapter.findByNumber(id, +num)
-    novel = await Novel.findOne({_id: detail.novel})
+    novel = await Novel.findById(detail.novel)
   } catch (e) {
     Handle.sendEmail(e.message)
     ctx.throw(422, e.message)

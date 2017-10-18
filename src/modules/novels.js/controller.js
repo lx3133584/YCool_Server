@@ -240,7 +240,7 @@ export async function getNovel (ctx) {
   let novel
   try {
     if (id && id !== '0') {
-      novel = await Novel.findOne({id})
+      novel = await Novel.findById(id)
     } else {
       novel = await Novel.findOne({name})
     }
@@ -299,6 +299,11 @@ export async function getNovel (ctx) {
       Handle.sendEmail(e.message)
       ctx.throw(422, e.message)
     }
+    const response = novel.toJSON()
+    response.join = false
+    ctx.body = {
+      data: response
+    }
 
     const novelId = novel.id
 
@@ -320,11 +325,7 @@ export async function getNovel (ctx) {
       Handle.sendEmail(e.message)
       ctx.throw(422, e.message)
     }
-    const response = novel.toJSON()
-    response.join = false
-    ctx.body = {
-      data: response
-    }
+
   }
 }
 
@@ -373,7 +374,7 @@ export async function getDirectory (ctx) {
   }
   try {
     results = await Chapter.getDirectory(options)
-    novel = await Novel.findOne({_id: id})
+    novel = await Novel.findById(id)
   } catch (e) {
     Handle.sendEmail(e.message)
     ctx.throw(422, e.message)
@@ -388,9 +389,14 @@ export async function getDirectory (ctx) {
 }
 
 export async function getRank(ctx) {
-
+  let results = []
   try {
-    var results = await Rank.getAllTypesList()
+    const typesList = await Rank.getAllTypesList()
+    for(let i = 0, len = typesList.length; i < len; i++) {
+      let type = typesList[i]
+      let rank = await Rank.getTypeList(type)
+      results.push({type, rank})
+    }
   } catch (e) {
     Handle.sendEmail(e.message)
     ctx.throw(422, e.message)
