@@ -102,7 +102,8 @@ export async function createUser (ctx) {
 
 // 登录
 export async function loginUser (ctx, next) {
-  const {account, password} = ctx.request.body
+  let {account, password} = ctx.request.body
+  account = account.replace(/\s/g, "");
   try {
     var user = await User.findOne({account})
   } catch (err) {
@@ -139,7 +140,7 @@ export async function loginUser (ctx, next) {
 export async function modifyPassword (ctx, next) {
   let user = ctx.state.user
   const {oldPassword, newPassword, newPassword2} = ctx.request.body
-
+  user.account = user.account.replace(/\s/g, "");
   try {
     user = await User.findOne({account: user.account})
   } catch (err) {
