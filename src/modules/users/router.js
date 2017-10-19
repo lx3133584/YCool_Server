@@ -27,6 +27,14 @@ export default [
   },
   {
     method: 'POST',
+    route: '/modify_password',
+    handlers: [
+      ensureUser,
+      user.modifyPassword
+    ]
+  },
+  {
+    method: 'POST',
     route: '/edit_name',
     handlers: [
       ensureUser,

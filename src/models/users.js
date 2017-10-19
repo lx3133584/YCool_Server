@@ -13,11 +13,11 @@ const User = new mongoose.Schema({
 
 User.pre('save', function preSave (next) {
   const user = this
-
+  user.account = user.account.replace(/\s/g, "");
   if (!user.isModified('password')) {
     return next()
   }
-  
+
   new Promise((resolve, reject) => {
     bcrypt.genSalt(10, (err, salt) => {
       if (err) { return reject(err) }

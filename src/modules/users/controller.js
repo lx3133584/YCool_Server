@@ -55,10 +55,15 @@ export async function createTourist (ctx) {
     token
   }
 }
+
+// 注册
 export async function createUser (ctx) {
   const {account, password, password2} = ctx.request.body
   if (password !== password2) {
     ctx.throw(422, '两次密码输入不一致')
+  }
+  if (password.length <= 8) {
+    ctx.throw(403, '密码必须大于等于8位')
   }
   //先查
   try {
@@ -82,16 +87,20 @@ export async function createUser (ctx) {
 
     var token = user.generateToken()
 
-    delete user.password
+    const response = user.toJSON()
+
+    delete response.password
+    delete response.password2
 
     ctx.body = {
       token,
-      user
+      user: response
     }
   }
 
 }
 
+// 登录
 export async function loginUser (ctx, next) {
   const {account, password} = ctx.request.body
   try {
@@ -118,6 +127,7 @@ export async function loginUser (ctx, next) {
   const response = user.toJSON()
 
   delete response.password
+  delete response.password2
 
   ctx.body = {
     token,
@@ -125,6 +135,54 @@ export async function loginUser (ctx, next) {
   }
 }
 
+// 修改密码
+export async function modifyPassword (ctx, next) {
+  let user = ctx.state.user
+  const {oldPassword, newPassword, newPassword2} = ctx.request.body
+
+  try {
+    user = await User.findOne({account: user.account})
+  } catch (err) {
+    Handle.sendEmail(err.message)
+    ctx.throw(422, err.message)
+  }
+
+  try {
+    var isMatch = await user.validatePassword(oldPassword)
+  } catch (err) {
+    Handle.sendEmail(err.message)
+    ctx.throw(422, err.message)
+  }
+
+  if (!isMatch) {
+    ctx.throw(403, '旧密码错误')
+  }
+  if (newPassword !== newPassword2) {
+    ctx.throw(403, '两次输入密码不一致')
+  }
+  if (oldPassword === newPassword) {
+    ctx.throw(403, '新密码与旧密码相同')
+  }
+  if (newPassword.length <= 8) {
+    ctx.throw(403, '密码必须大于等于8位')
+  }
+
+  user.password = newPassword;
+  user.password2 = newPassword2;
+
+  try {
+    await user.save()
+  } catch (err) {
+    Handle.sendEmail(err.message)
+    ctx.throw(422, err.message)
+  }
+
+  ctx.body = {
+    success: true
+  }
+}
+
+// 编辑昵称
 export async function editName (ctx, next) {
   let user = ctx.state.user
   const {name} = ctx.request.body
@@ -144,6 +202,7 @@ export async function editName (ctx, next) {
   }
 }
 
+// 获取用户信息
 export async function getInfo (ctx) {
   const user = ctx.state.user
   ctx.body = {
