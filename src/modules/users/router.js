@@ -1,4 +1,5 @@
 import { ensureUser } from '../../middleware/validators'
+import upload from '../../middleware/upload'
 import * as user from './controller'
 
 export const baseUrl = '/user'
@@ -39,6 +40,15 @@ export default [
     handlers: [
       ensureUser,
       user.editName
+    ]
+  },
+  {
+    method: 'POST',
+    route: '/avatar',
+    handlers: [
+      ensureUser,
+      upload.single('avatar'),
+      user.modifyAvatar
     ]
   },
   {

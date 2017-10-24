@@ -1,7 +1,10 @@
 import User from '../../models/users'
 import passport from 'koa-passport'
 
-
+// 添加图片路径域名
+function addImagePathHost(img, ctx) {
+  return img.replace(/[\s\S]*(?=upload)/, ctx.req.headers.origin + '/').replace(/\\/g, '/')
+}
 /**
   @api {POST} /users/tourists 新增游客
   @apiDescription
@@ -130,6 +133,7 @@ export async function loginUser (ctx, next) {
   delete response.password
   delete response.password2
 
+  response.avatar = addImagePathHost(response.avatar, ctx)
   ctx.body = {
     token,
     user: response
@@ -203,9 +207,30 @@ export async function editName (ctx, next) {
   }
 }
 
+// 修改头像
+export async function modifyAvatar (ctx, next) {
+  let user = ctx.state.user
+  let {path} = ctx.req.file
+
+  user.avatar = path
+
+  try {
+    await user.save()
+  } catch (e) {
+    Handle.sendEmail(e.message)
+    ctx.throw(422, e.message)
+  }
+  user.avatar = addImagePathHost(user.avatar, ctx)
+  ctx.body = {
+    success: true,
+    user
+  }
+}
+
 // 获取用户信息
 export async function getInfo (ctx) {
   const user = ctx.state.user
+  user.avatar = addImagePathHost(user.avatar, ctx)
   ctx.body = {
     data: user
   }
