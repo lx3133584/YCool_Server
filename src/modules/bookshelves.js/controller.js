@@ -9,7 +9,7 @@ async function toggleNovelType(id, type = 'Normal') {
     novel.type = type
     await novel.save()
   } catch (e) {
-    Handle.sendEmail(e.message)
+    Handle.sendEmail(e.stack)
   }
 }
 /**
@@ -62,7 +62,7 @@ export async function getBookshelf (ctx) {
   try {
     var data = await Bookshelf.getList(user.id)
   } catch (e) {
-    Handle.sendEmail(e.message)
+    Handle.sendEmail(e.stack)
     ctx.throw(422, e.message)
   }
 
@@ -123,7 +123,7 @@ export async function orderNovel (ctx) {
   try {
     await bookshelf.save()
   } catch (e) {
-    Handle.sendEmail(e.message)
+    Handle.sendEmail(e.stack)
     ctx.throw(422, e.message)
   }
 
@@ -166,7 +166,7 @@ export async function deleteNovel (ctx) {
     book = await Bookshelf.findById(id)
     await Bookshelf.remove({_id: id})
   } catch (e) {
-    Handle.sendEmail(e.message)
+    Handle.sendEmail(e.stack)
     ctx.throw(422, err.message)
   }
 
@@ -213,7 +213,7 @@ export async function changeBookshelf (ctx) {
     bookshelf = await Bookshelf.findByUserAndNovelId(options)
     chapter = await Chapter.findByNumber(novel.id, novel.num)
   } catch (e) {
-    Handle.sendEmail(e.message)
+    Handle.sendEmail(e.stack)
     ctx.throw(422, e.message)
   }
 
@@ -222,7 +222,7 @@ export async function changeBookshelf (ctx) {
   try {
     await bookshelf.save()
   } catch (e) {
-    Handle.sendEmail(e.message)
+    Handle.sendEmail(e.stack)
     ctx.throw(422, e.message)
   }
 

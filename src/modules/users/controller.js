@@ -199,7 +199,7 @@ export async function editName (ctx, next) {
   try {
     await user.save()
   } catch (e) {
-    Handle.sendEmail(e.message)
+    Handle.sendEmail(e.stack)
     ctx.throw(422, e.message)
   }
 
@@ -218,7 +218,7 @@ export async function modifyAvatar (ctx, next) {
   try {
     await user.save()
   } catch (e) {
-    Handle.sendEmail(e.message)
+    Handle.sendEmail(e.stack)
     ctx.throw(422, e.message)
   }
   user.avatar = addImagePathHost(user.avatar, ctx)

@@ -28,7 +28,7 @@ export async function updateVip() {
     //将需要爬取的小说类型设置成VIP
     crawlerList = await Novel.find({type: 'VIP'})
   } catch (e) {
-    Handle.sendEmail(e.message)
+    Handle.sendEmail(e.stack)
   }
 
   if (crawlerList) {
@@ -36,7 +36,7 @@ export async function updateVip() {
       try {
         $ = await Crawler.getHtml(item.url)
       } catch (e) {
-        Handle.sendEmail(e.message)
+        Handle.sendEmail(e.stack)
       }
 
       chapterArr = $('#list dd a')
@@ -54,7 +54,7 @@ export async function updateVip() {
           try {
             await chapter.save()
           } catch (e) {
-            Handle.sendEmail(e.message)
+            Handle.sendEmail(e.stack)
           }
         }
         item.updateTime = $('#info p')[2].children[0].data.substring(5, $('#info p')[2].children[0].data.length)
@@ -63,7 +63,7 @@ export async function updateVip() {
         try {
           await item.save()
         } catch (e) {
-          Handle.sendEmail(e.message)
+          Handle.sendEmail(e.stack)
         }
         //发送邮件并更新小说信息
         Handle.sendEmail('《' + item.name + '》 更新啦', 'update')
@@ -78,7 +78,7 @@ async function getNovel(name, url) {
   try {
     novel = await Novel.findOne({name})
   } catch (e) {
-    Handle.sendEmail(e.message)
+    Handle.sendEmail(e.stack)
   }
 
   //判断数据库中是否有该小说，没有在去网站爬取
@@ -87,7 +87,7 @@ async function getNovel(name, url) {
   try {
     var $ = await Crawler.getHtml(url)
   } catch (e) {
-    Handle.sendEmail(e.message)
+    Handle.sendEmail(e.stack)
   }
 
   let novelInfo = {}
@@ -107,7 +107,7 @@ async function getNovel(name, url) {
   try {
     await novel.save()
   } catch (e) {
-    Handle.sendEmail(e.message)
+    Handle.sendEmail(e.stack)
   }
 
   const novelId = novel.id
@@ -117,7 +117,7 @@ async function getNovel(name, url) {
     var lastChapter = await Chapter.getLastTitle(novelId)
     var count = await Chapter.getCount(novelId)
   } catch (e) {
-    Handle.sendEmail(e.message)
+    Handle.sendEmail(e.stack)
   }
 
   novel.lastChapterTitle = lastChapter[0].title
@@ -126,7 +126,7 @@ async function getNovel(name, url) {
   try {
     await novel.save()
   } catch (e) {
-    Handle.sendEmail(e.message)
+    Handle.sendEmail(e.stack)
   }
   return novel
 }
@@ -136,7 +136,7 @@ export async function updateRank() {
   try {
     $ = await Crawler.getHtml('http://www.37zw.net/')
   } catch (e) {
-    Handle.sendEmail(e.message)
+    Handle.sendEmail(e.stack)
   }
   const typeList = $('#main .novelslist .content')
   typeList.each(async function () {
@@ -150,7 +150,7 @@ export async function updateRank() {
       try {
         novel = await getNovel(name, url)
       } catch (e) {
-        Handle.sendEmail(e.message)
+        Handle.sendEmail(e.stack)
       }
       if (!novel) return
 
@@ -158,7 +158,7 @@ export async function updateRank() {
       try {
         rank = await Rank.findOne({key: type + num})
       } catch (e) {
-        Handle.sendEmail(e.message)
+        Handle.sendEmail(e.stack)
       }
 
       if (rank) {
@@ -174,7 +174,7 @@ export async function updateRank() {
       try {
         await rank.save()
       } catch (e) {
-        Handle.sendEmail(e.message)
+        Handle.sendEmail(e.stack)
       }
 
     })

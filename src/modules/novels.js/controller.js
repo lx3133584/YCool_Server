@@ -115,7 +115,7 @@ export async function searchFromZH (ctx) {
   try {
     var body = await Crawler.getBody(url)
   } catch (e) {
-    Handle.sendEmail(e.message)
+    Handle.sendEmail(e.stack)
     ctx.throw(422, err.message)
   }
 
@@ -174,7 +174,7 @@ export async function searchFromBQK (ctx) {
   try {
     var body = await Crawler.request(encodeURI(url))
   } catch (e) {
-    Handle.sendEmail(e.message)
+    Handle.sendEmail(e.stack)
     ctx.throw(422, e.message)
   }
   const $ = cheerio.load(body, {decodeEntities: false})
@@ -256,7 +256,7 @@ export async function getNovel (ctx) {
       try {
         bookshelf = await Bookshelf.findOne({novel: novel.id, user: user._id})
       } catch (e) {
-        Handle.sendEmail(e.message)
+        Handle.sendEmail(e.stack)
         ctx.throw(422, e.message)
       }
       if (bookshelf) {
@@ -275,7 +275,7 @@ export async function getNovel (ctx) {
     try {
       var $ = await Crawler.getHtml(url)
     } catch (e) {
-      Handle.sendEmail(e.message)
+      Handle.sendEmail(e.stack)
       ctx.throw(422, e.message)
     }
 
@@ -296,7 +296,7 @@ export async function getNovel (ctx) {
     try {
       await novel.save()
     } catch (e) {
-      Handle.sendEmail(e.message)
+      Handle.sendEmail(e.stack)
       ctx.throw(422, e.message)
     }
     const response = novel.toJSON()
@@ -312,7 +312,7 @@ export async function getNovel (ctx) {
       var lastChapter = await Chapter.getLastTitle(novelId)
       var count = await Chapter.getCount(novelId)
     } catch (e) {
-      Handle.sendEmail(e.message)
+      Handle.sendEmail(e.stack)
       ctx.throw(422, e.message)
     }
 
@@ -322,7 +322,7 @@ export async function getNovel (ctx) {
     try {
       await novel.save()
     } catch (e) {
-      Handle.sendEmail(e.message)
+      Handle.sendEmail(e.stack)
       ctx.throw(422, e.message)
     }
 
@@ -376,7 +376,7 @@ export async function getDirectory (ctx) {
     results = await Chapter.getDirectory(options)
     novel = await Novel.findById(id)
   } catch (e) {
-    Handle.sendEmail(e.message)
+    Handle.sendEmail(e.stack)
     ctx.throw(422, e.message)
   }
 
@@ -398,7 +398,7 @@ export async function getRank(ctx) {
       results.push({type, rank})
     }
   } catch (e) {
-    Handle.sendEmail(e.message)
+    Handle.sendEmail(e.stack)
     ctx.throw(422, e.message)
   }
 

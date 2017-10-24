@@ -48,7 +48,7 @@ export async function getChapterInfo (ctx) {
     detail = await Chapter.findByNumber(id, +num)
     novel = await Novel.findById(detail.novel)
   } catch (e) {
-    Handle.sendEmail(e.message)
+    Handle.sendEmail(e.stack)
     ctx.throw(422, e.message)
   }
 
@@ -65,7 +65,7 @@ export async function getChapterInfo (ctx) {
       detail.content = content
       await detail.save()
     } catch (e) {
-      Handle.sendEmail(e.message)
+      Handle.sendEmail(e.stack)
       ctx.throw(422, e.message)
     }
   }
@@ -83,7 +83,7 @@ export async function updateProgress (ctx) {
   try {
     novel = await Bookshelf.findOne({user: user.id, novel: id})
   } catch (e) {
-    Handle.sendEmail(e.message)
+    Handle.sendEmail(e.stack)
     ctx.throw(422, e.message)
   }
 
@@ -95,7 +95,7 @@ export async function updateProgress (ctx) {
       novel.progress = +num + 1
       await novel.save()
     } catch (e) {
-      Handle.sendEmail(e.message)
+      Handle.sendEmail(e.stack)
       ctx.throw(422, e.message)
     }
   }
@@ -171,7 +171,7 @@ export async function getFirstRenderChapter(ctx) {
     }
   } catch (e) {
     console.log(e)
-    Handle.sendEmail(e.message)
+    Handle.sendEmail(e.stack)
     ctx.throw(422, e.message)
   }
 
@@ -182,7 +182,7 @@ export async function getFirstRenderChapter(ctx) {
       chapter.content = content
       await chapter.save()
     } catch (e) {
-      Handle.sendEmail(e.message)
+      Handle.sendEmail(e.stack)
       ctx.throw(422, e.message)
     }
   }
@@ -245,7 +245,7 @@ export async function getNextChapterInfo (ctx) {
   try {
     var currentDetail = await Chapter.getContent(id)
   } catch (e) {
-    Handle.sendEmail(e.message)
+    Handle.sendEmail(e.stack)
     ctx.throw(422, e.message)
   }
 
@@ -254,7 +254,7 @@ export async function getNextChapterInfo (ctx) {
   try {
     var nextDetail = await Chapter.findByNumber(novelId, chapterNum)
   } catch (e) {
-    Handle.sendEmail(e.message)
+    Handle.sendEmail(e.stack)
     ctx.throw(422, e.message)
   }
 
@@ -270,7 +270,7 @@ export async function getNextChapterInfo (ctx) {
       nextDetail.content = content
       await nextDetail.save()
     } catch (err) {
-      Handle.sendEmail(e.message)
+      Handle.sendEmail(e.stack)
       ctx.throw(422, e.message)
     }
   }
@@ -321,7 +321,7 @@ export async function getLastChapterInfo (ctx) {
   try {
     var currentDetail = await Chapter.getContent(id)
   } catch (e) {
-    Handle.sendEmail(e.message)
+    Handle.sendEmail(e.stack)
     ctx.throw(422, err.message)
   }
 
@@ -330,7 +330,7 @@ export async function getLastChapterInfo (ctx) {
   try {
     var lastDetail = await Chapter.findByNumber(novelId, chapterNum)
   } catch (e) {
-    Handle.sendEmail(e.message)
+    Handle.sendEmail(e.stack)
     ctx.throw(422, e.message)
   }
 
@@ -346,7 +346,7 @@ export async function getLastChapterInfo (ctx) {
       lastDetail.content = content
       await lastDetail.save()
     } catch (e) {
-      Handle.sendEmail(e.message)
+      Handle.sendEmail(e.stack)
       ctx.throw(422, e.message)
     }
   }
