@@ -3,6 +3,7 @@ import passport from 'koa-passport'
 
 // 添加图片路径域名
 function addImagePathHost(img, ctx) {
+  if (!img) return
   return ctx.req.headers.origin + '/' + img
 }
 /**
