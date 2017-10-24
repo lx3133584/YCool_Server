@@ -3,7 +3,7 @@ import passport from 'koa-passport'
 
 // 添加图片路径域名
 function addImagePathHost(img, ctx) {
-  return img.replace(/[\s\S]*(?=upload)/, ctx.req.headers.origin + '/').replace(/\\/g, '/')
+  return ctx.req.headers.origin + '/' + img
 }
 /**
   @api {POST} /users/tourists 新增游客
@@ -212,7 +212,7 @@ export async function modifyAvatar (ctx, next) {
   let user = ctx.state.user
   let {path} = ctx.req.file
 
-  user.avatar = path
+  user.avatar = path.replace(/[\s\S]*(?=upload)/, '').replace(/\\/g, '/')
 
   try {
     await user.save()
