@@ -4,14 +4,14 @@ export const baseUrl = '/test'
 
 export default [
   {
-    method: 'GET',
+    method: 'POST',
     route: '/update_vip',
     handlers: [
       test.updateVip
     ]
   },
   {
-    method: 'GET',
+    method: 'POST',
     route: '/update_rank',
     handlers: [
       test.updateRank
