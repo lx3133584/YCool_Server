@@ -5,9 +5,16 @@ export const baseUrl = '/test'
 export default [
   {
     method: 'GET',
-    route: '/update',
+    route: '/update_vip',
     handlers: [
-      test.updateNovel
+      test.updateVip
+    ]
+  },
+  {
+    method: 'GET',
+    route: '/update_rank',
+    handlers: [
+      test.updateRank
     ]
   },
   {
