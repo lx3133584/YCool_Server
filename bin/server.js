@@ -37,13 +37,10 @@ const modules = require('../src/modules')
 modules(app)
 
 app.listen(config.port, () => {
+  //更新小说爬虫
+  const UpdateNovel = require('../src/utils/updateNovel')
+  UpdateNovel.start()
   console.log(`Server started on ${config.port}`)
 })
-
-//更新小说爬虫
-const UpdateNovel = require('../src/utils/updateNovel')
-if (app.env !== 'development') {
-  UpdateNovel.start()
-}
 
 export default app

@@ -2,6 +2,7 @@ import Novel from '../../models/novels'
 import Bookshelf from '../../models/bookshelf'
 import Chapter from '../../models/chapters'
 import Rank from '../../models/rank'
+import * as UpdateNovel from '../../utils/updateNovel'
 
 import * as Crawler from '../../utils/crawler'
 import simplePinyin from 'simple-pinyin'
@@ -282,7 +283,7 @@ export async function getNovel (ctx) {
     let novelInfo = {}
     const author = $('#info p')[0].children[0].data
     const updateTime = $('#info p')[2].children[0].data
-    const img = $('#fmimg img')[0].attribs['data-cfsrc']
+    const img = $('#fmimg img')[0].attribs['src']
 
     novelInfo.url = url
     novelInfo.name = $('#info h1')[0].children[0].data
@@ -391,8 +392,13 @@ export async function getDirectory (ctx) {
 export async function getRank(ctx) {
   let results = []
   try {
-    const typesList = await Rank.getAllTypesList()
-    for(let i = 0, len = typesList.length; i < len; i++) {
+    let typesList = await Rank.getAllTypesList()
+    const len = typesList.length
+    if (!len) {
+      await UpdateNovel.updateRank()
+      typesList = await Rank.getAllTypesList()
+    }
+    for(let i = 0; i < len; i++) {
       let type = typesList[i]
       let rank = await Rank.getTypeList(type)
       results.push({type, rank})

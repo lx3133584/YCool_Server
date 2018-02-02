@@ -93,7 +93,7 @@ async function getNovel(name, url) {
   let novelInfo = {}
   const author = $('#info p')[0].children[0].data
   const updateTime = $('#info p')[2].children[0].data
-  const img = $('#fmimg img')[0].attribs['data-cfsrc']
+  const img = $('#fmimg img')[0].attribs['src']
 
   novelInfo.url = url
   novelInfo.name = $('#info h1')[0].children[0].data
