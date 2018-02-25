@@ -288,7 +288,7 @@ export async function getNovel (ctx) {
     novelInfo.url = url
     novelInfo.name = $('#info h1')[0].children[0].data
     novelInfo.author = author.substring(27, author.length)
-    novelInfo.img = `http://www.37zw.net${img}`
+    novelInfo.img = `https://www.37zw.net${img}`
     novelInfo.updateTime = updateTime.substring(5, updateTime.length)
     novelInfo.introduction = $('#intro p')[0].children[0].data
 
